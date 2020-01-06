@@ -50,3 +50,23 @@ exports.userLogin = async(email, password) => {
         return false;
     }
 }
+
+exports.userRegister = async(username, email, password) => {
+    var u = await db.query("SELECT * FROM users WHERE email = "+db.escape(email)+" AND login = "+db.escape(username));
+    if (u[0] && u[0][0]) {
+        return false;
+    } else {
+        const hash = scrypt(password.normalize('NFKC'), "animawka", 16384, 8, 1, 64).toString('hex');
+        var u = await db.query("INSERT INTO users (login, email, password, rank, avatar, token) VALUES"
+        + "( "+db.escape(username)
+        + ", "+db.escape(email)
+        + ", "+db.escape(hash)
+        + ", "+db.escape("1")
+        + ", "+db.escape("https://vignette2.wikia.nocookie.net/konosuba/images/6/69/6ItDIsj.png/revision/latest?cb=20160210105329")
+        + ", "+db.escape("tokenXD")
+        + ")"
+        );
+        return true;
+
+    }
+}

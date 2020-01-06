@@ -35,9 +35,32 @@ app.post('/login', function (req, res) {
             return res.json({error:true, token:false, message: 'Incorrect data'});
         } else {
             console.log(out);
-            return res.json({error:false, user:out, message: 'coming soon'});
+            return res.json({error:false, user:out, message: 'Logged'});
         }
     });
+});
+
+app.post('/register', function (req, res) {
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
+    const password2 = req.body.password2;
+    if(username && email && password && password2){
+        if (password === password2) {
+            db.userRegister(username, email, password).then(out => {
+                if (out === false) {
+                    return res.json({error:true, done:false, message: 'Incorrect data'});
+                } else {
+                    console.log(out);
+                    return res.json({error:false, done:true, message: 'Registered'});
+                }
+            });
+        } else {
+            return res.json({error:true, done:false, message: 'Incorrect passwords'});
+        }
+    } else {
+        return res.json({error:true, done:false, message: 'Empty data'});
+    }
 });
 
 app.listen(3000, function () {
